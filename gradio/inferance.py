@@ -49,7 +49,7 @@ iface = gr.Interface(
         gr.Image(type="pil", label="Загруженное изображение"),  # Задаем тип входных данных (изображение формата PIL).
         gr.Slider(minimum=0, maximum=1, value=0.25, label="Confidence threshold"),  # Добавляем слайдер для регулировки порога уверенности.
         gr.Slider(minimum=0, maximum=1, value=0.45, label="IoU threshold"),  # Добавляем слайдер для регулировки порога IoU.
-        gr.Dropdown(model_choices, label="Выбор модели YOLO"),
+        gr.Dropdown(model_choices,value="yolov8m.pt", label="Выбор модели YOLO"),
     ],
     
      outputs=[
