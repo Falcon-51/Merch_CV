@@ -3,7 +3,7 @@
 
 | class                | view |
 |----------------------|------|
-| sampo_waffle_classic |<image src="vafles.png">|
+| sampo_waffle_classic |<image src="vafles.png" width="20" height="20">|
 | sampo_waffle_lemon   |      |
 | sl_pm_2_5_1          |      |
 | sl_pm_3_5_1          |      |
