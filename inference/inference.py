@@ -12,6 +12,19 @@ PRODUCTS_AREA = 0
 SHELFES_AREA = 0
 CORD_SHELFS = []
 
+names = {
+  "sampo_waffle_classic": "sampo_waffle_classic",
+  "sampo_waffle_lemon": "sampo_waffle_lemon",
+  "sl_pm_2_5_1": "slavmo_milk_2.5_1" ,
+  "sl_pm_3_5_1": "slavmo_milk_3.5_1" ,
+  "sl_pm_2_5_1_5": "slavmo_milk_2.5_1.5" ,
+  "sl_pm_3_5_1_5": "slavmo_milk_3.5_1.5",
+  "sl_pbm_0_5": "slavmo_milk_melted_3.5_0.5",
+  "ol_pm_2_5_1": "olonia_milk_2.5_1",
+  "ol_pm_3_5_1": "olonia_milk_3.5_1",
+  "ol_pbm_0_5": "olonia_milk_melted_4_0.5",
+}
+
 def calculate_area(x_min:float, y_min:float, x_max:float, y_max:float) -> float:
     area = (x_max - x_min) * (y_max - y_min)
     return area
