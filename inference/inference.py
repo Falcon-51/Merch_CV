@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import os
 
-model_choices = ["weights/YOLOV10_Karelia.pt", "weights/yolov10n.pt", "weights/yolov10s.pt", "weights/yolov10m.pt"]
+model_choices = ["weights/YOLOV10_Karelia_v2.pt","weights/YOLOV10_Karelia.pt", "weights/yolov10n.pt", "weights/yolov10s.pt", "weights/yolov10m.pt"]
 
 PRODUCTS_AREA = 0
 SHELFES_AREA = 0
