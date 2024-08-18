@@ -48,4 +48,5 @@
 | ol_pbm_0_5           |<image src="face_images/milk8.png" width="110" height="130">|
 
 ## Результат работы.  
-<image src="face_images/itog2.jpg"> <image src="face_images/itog1.jpg">
+<image src="face_images/itog2.jpg"> <image src="face_images/itog1.jpg"> <image src="face_images/test1.jpg"> <image src="face_images/test2.jpg"> <image src="face_images/test4й6.jpg"> <image src="face_images/test46.jpg">
+
