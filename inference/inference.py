@@ -6,18 +6,18 @@ from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 
 
-
-
 model_choices = ["weights/YOLOV10_Karelia.pt", "weights/yolov10n.pt", "weights/yolov10s.pt", "weights/yolov10m.pt"]
+
 PRODUCTS_AREA = 0
 SHELFES_AREA = 0
 
 
-def calculate_area(x_min, y_min, x_max, y_max):
+def calculate_area(x_min:float, y_min:float, x_max:float, y_max:float) -> float:
     area = (x_max - x_min) * (y_max - y_min)
     return area
 
-def get_shelfs(img, polka_conf, polka_iou) -> BytesIO: 
+
+def get_shelfs(img:Image, polka_conf:float, polka_iou:float) -> BytesIO: 
 
         # Задаем необходимые параметры
     URL = "https://detect.roboflow.com/shelves-ugxt3/3"
@@ -87,7 +87,7 @@ def get_shelfs(img, polka_conf, polka_iou) -> BytesIO:
 
 
 
-def predict_image(img, conf_threshold:float, iou_threshold:float, model_choice:list[str]) -> Image:
+def predict_image(img:Image, conf_threshold:float, iou_threshold:float, model_choice:list[str]) -> Image:
     """Функция для предсказания объектов на изображении с использованием модели YOLOv8.
     Аргументы:
     - img: изображение для обработки.
@@ -157,4 +157,5 @@ def infer() -> None:
 
 
 if __name__ == "__main__":  
+    
     infer()
