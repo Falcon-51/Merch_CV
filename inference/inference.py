@@ -59,7 +59,7 @@ def get_shelfs(img, polka_conf, polka_iou) -> BytesIO:
                 y2 = prediction['y'] + prediction['height'] / 2
                 
                 # Рисуем рамку
-                draw.rectangle([x1, y1, x2, y2], outline="blue", width=8)
+                draw.rectangle([x1, y1, x2, y2], outline="blue", width=6)
 
                 area = calculate_area(x1,y1,x2,y2)
                 SHELFES_AREA += area
@@ -69,11 +69,11 @@ def get_shelfs(img, polka_conf, polka_iou) -> BytesIO:
                 text = f"Area:{area} ({confidence:.2f}, {class_name} ({confidence:.2f})"  # Форматируем текст
 
                             # Определяем размер текста
-                font_size = int(height / 50)   # Размер шрифта
+                font_size = int(height / 35)   # Размер шрифта
                 font = ImageFont.load_default(font_size)  # Используем стандартный шрифт
 
                 # Рисуем фон для текста
-                draw.rectangle([x1, y1 , x1+170, y1+15], fill="red")
+                #draw.rectangle([x1, y1 , x1+170, y1+15], fill="red")
 
                 # Рисуем текст
                 draw.text((x1, y1), text, fill="white", font=font)
@@ -133,10 +133,10 @@ def infer() -> None:
         fn=lambda img, conf_threshold, iou_threshold, polka_conf, polka_iou, model_choice: predict_image(get_shelfs(img, polka_conf, polka_iou), conf_threshold, iou_threshold, model_choice),  # Указываем функцию предсказания, которая будет вызываться при загрузке изображения.
         inputs=[
             gr.Image(type="pil", label="Загруженное изображение"),  # Задаем тип входных данных (изображение формата PIL).
-            gr.Slider(minimum=0, maximum=1, value=0.25, label="Products onfidence threshold"),  # Добавляем слайдер для регулировки порога уверенности.
+            gr.Slider(minimum=0, maximum=1, value=0.25, label="Products Confidence threshold"),  # Добавляем слайдер для регулировки порога уверенности.
             gr.Slider(minimum=0, maximum=1, value=0.45, label="Products IoU threshold"),  # Добавляем слайдер для регулировки порога IoU.
             gr.Slider(minimum=0, maximum=1, value=0.25, label="Shelf Confidence threshold"),  # Добавляем слайдер для регулировки порога уверенности.
-            gr.Slider(minimum=0, maximum=1, value=0.45, label="Shelf IoU polka threshold"),
+            gr.Slider(minimum=0, maximum=1, value=0.45, label="Shelf IoU threshold"),
             gr.Dropdown(model_choices, label="Выбор модели YOLO"),
         ],
         
@@ -147,13 +147,14 @@ def infer() -> None:
         title="Карельская продукция",  
         description="Детекция товаров карельских производителей в розничных магазинах на основе фото", 
         examples=[
-            [ASSETS / "bus.jpg", 0.25, 0.45],  
-            [ASSETS / "zidane.jpg", 0.5, 0.5],  
+            [ASSETS / "/Users/anton/Merch_CV/inference/images/EXAM.jpg", 0.21, 0.45, 0.12, 0.21,"YOLOV10_Karelia.pt"],  
+            [ASSETS / "/Users/anton/Merch_CV/inference/images/EXAM2.jpg", 0.21, 0.41, 0.18, 0.22,"YOLOV10_Karelia.pt"],
+            [ASSETS / "/Users/anton/Merch_CV/inference/images/EXAM3.jpg", 0.064, 0.25, 0.17, 0.21,"YOLOV10_Karelia.pt"],  
         ],
         allow_flagging="never"
     )
 
-    iface.launch()  
+    iface.launch(share=True)  
 
 
 if __name__ == "__main__":  
