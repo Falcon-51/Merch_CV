@@ -9,7 +9,13 @@ from io import BytesIO
 
 
 model_choices = ["weights/YOLOV10_Karelia.pt", "weights/yolov10n.pt", "weights/yolov10s.pt", "weights/yolov10m.pt"]
+PRODUCTS_AREA = 0
+SHELFES_AREA = 0
 
+
+def calculate_area(x_min, y_min, x_max, y_max):
+    area = (x_max - x_min) * (y_max - y_min)
+    return area
 
 def get_shelfs(img, polka_conf, polka_iou) -> BytesIO: 
 
@@ -18,7 +24,7 @@ def get_shelfs(img, polka_conf, polka_iou) -> BytesIO:
     API_KEY = "z5gSjUxoC2gzAYUByax6"
     CONFIDENSE = polka_conf  # Укажите нужный порог уверенности
     IOU = polka_iou
-
+    global SHELFES_AREA 
     # Формируем параметры запроса
     PARAMS = {
         'api_key': API_KEY,
@@ -55,17 +61,19 @@ def get_shelfs(img, polka_conf, polka_iou) -> BytesIO:
                 # Рисуем рамку
                 draw.rectangle([x1, y1, x2, y2], outline="blue", width=8)
 
+                area = calculate_area(x1,y1,x2,y2)
+                SHELFES_AREA += area
                 # Подготавливаем текст для отображения
                 class_name = prediction['class']  # Название класса
                 confidence = prediction['confidence']  # Уровень уверенности
-                text = f"{class_name} ({confidence:.2f})"  # Форматируем текст
+                text = f"Area:{area} ({confidence:.2f}, {class_name} ({confidence:.2f})"  # Форматируем текст
 
                             # Определяем размер текста
                 font_size = int(height / 50)   # Размер шрифта
                 font = ImageFont.load_default(font_size)  # Используем стандартный шрифт
 
                 # Рисуем фон для текста
-                draw.rectangle([x1, y1 , x1+100, y1+15], fill="red")
+                draw.rectangle([x1, y1 , x1+170, y1+15], fill="red")
 
                 # Рисуем текст
                 draw.text((x1, y1), text, fill="white", font=font)
@@ -87,7 +95,7 @@ def predict_image(img, conf_threshold:float, iou_threshold:float, model_choice:l
     - iou_threshold: порог Intersection Over Union для подавления ненужных перекрывающихся объектов.
     """
     model = YOLO(model_choice)
-    
+    global PRODUCTS_AREA
     detected_objects = []
     # Прогоняем изображение через модель YOLO для детекции объектов.
     results = model.predict(
@@ -108,8 +116,12 @@ def predict_image(img, conf_threshold:float, iou_threshold:float, model_choice:l
         for box in r.boxes:
             cls = r.names[int(box.cls)]  # Извлекаем название класса объекта
             conf = box.conf  # Извлекаем уверенность объекта
-            detected_objects.append(f"{cls}: {conf.item()*100:.2f}%")
-
+            # Извлекаем координаты ограничивающего прямоугольника
+            x_min, y_min, x_max, y_max = box.xyxy[0]  # Координаты: [x1, y1, x2, y2]
+            area = calculate_area(x_min, y_min, x_max, y_max)
+            PRODUCTS_AREA += area
+            detected_objects.append(f"Area: {area}, cls: {cls} - {conf.item()*100:.2f}%")
+    detected_objects.append(f"Square (PRODUCTS_AREA/SHELFES_AREA): {PRODUCTS_AREA/SHELFES_AREA}")
     # Возвращаем как изображение, так и список найденных объектов
     return im, "\n".join(detected_objects)
 

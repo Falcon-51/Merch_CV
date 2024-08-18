@@ -4,7 +4,11 @@ from ultralytics import YOLO
 model = YOLO("weights/yolov10n.pt")
 
 # Perform object detection on an image
-results = model("1.jpg")
+results = model.val()
 
 # Display the results
 results[0].show()
+
+# model = YOLO('yolov8n.pt')
+# >>> results = model.val(data='coco128.yaml', imgsz=640)
+# >>> print(results.box.map)  
