@@ -6,16 +6,29 @@ from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import os
 
-
 model_choices = ["weights/YOLOV10_Karelia.pt", "weights/yolov10n.pt", "weights/yolov10s.pt", "weights/yolov10m.pt"]
 
 PRODUCTS_AREA = 0
 SHELFES_AREA = 0
-
+CORD_SHELFS = []
 
 def calculate_area(x_min:float, y_min:float, x_max:float, y_max:float) -> float:
     area = (x_max - x_min) * (y_max - y_min)
     return area
+
+
+def get_box_center(x_min:float, y_min:float, x_max:float, y_max:float) -> tuple[float]:
+    center_y = (y_min + y_max) / 2
+    center_x = (x_min + x_max) / 2
+    return center_x, center_y
+
+def point_in_shelves(data, point):
+    x, y = point
+    for (x1, y1, x2, y2, number_shelf) in data:
+        # Проверяем, находится ли точка внутри прямоугольника
+        if x1 <= x <= x2 and y1 <= y <= y2:
+            return number_shelf
+    return None  # Если точка не находится ни в одном прямоугольнике
 
 
 def get_shelfs(img:Image, polka_conf:float, polka_iou:float) -> BytesIO: 
@@ -25,13 +38,17 @@ def get_shelfs(img:Image, polka_conf:float, polka_iou:float) -> BytesIO:
     API_KEY = "z5gSjUxoC2gzAYUByax6"
     CONFIDENSE = polka_conf  # Укажите нужный порог уверенности
     IOU = polka_iou
+
     global SHELFES_AREA 
+    global CORD_SHELFS
     # Формируем параметры запроса
     PARAMS = {
         'api_key': API_KEY,
         'confidence': CONFIDENSE,  # Добавляем параметр confidence
         'iou': IOU
     }
+
+    min_cord = []
 
     # Создаем буфер для изображения
     img_byte_arr = BytesIO()
@@ -50,6 +67,15 @@ def get_shelfs(img:Image, polka_conf:float, polka_iou:float) -> BytesIO:
         # Создаем объект для рисования
         draw = ImageDraw.Draw(img)
 
+        for prediction in data['predictions']:
+            x1 = prediction['x'] - prediction['width'] / 2
+            y1 = prediction['y'] - prediction['height'] / 2
+            x2 = prediction['x'] + prediction['width'] / 2
+            y2 = prediction['y'] + prediction['height'] / 2
+            min_cord.sort()
+            min_cord.append(y1)
+
+
         # Проходим по всем предсказанным объектам
         for prediction in data['predictions']:
             if prediction['confidence'] >= CONFIDENSE:
@@ -59,15 +85,19 @@ def get_shelfs(img:Image, polka_conf:float, polka_iou:float) -> BytesIO:
                 x2 = prediction['x'] + prediction['width'] / 2
                 y2 = prediction['y'] + prediction['height'] / 2
                 
+                
+                number_shelf = abs(min_cord.index(y1) - len(min_cord))
+                CORD_SHELFS.append((x1, y1, x2, y2,number_shelf))
                 # Рисуем рамку
                 draw.rectangle([x1, y1, x2, y2], outline="blue", width=6)
 
                 area = calculate_area(x1,y1,x2,y2)
                 SHELFES_AREA += area
+
                 # Подготавливаем текст для отображения
                 class_name = prediction['class']  # Название класса
                 confidence = prediction['confidence']  # Уровень уверенности
-                text = f"Area:{area} ({confidence:.2f}, {class_name} ({confidence:.2f})"  # Форматируем текст
+                text = f"({confidence:.2f}, {class_name}), Level {number_shelf}, Area:{area}"  # Форматируем текст
 
                             # Определяем размер текста
                 font_size = int(height / 35)   # Размер шрифта
@@ -76,14 +106,16 @@ def get_shelfs(img:Image, polka_conf:float, polka_iou:float) -> BytesIO:
                 # Рисуем фон для текста
                 #draw.rectangle([x1, y1 , x1+170, y1+15], fill="red")
 
+
                 # Рисуем текст
                 draw.text((x1, y1), text, fill="white", font=font)
-
+        
 
     else:
         print(f"Ошибка: {response.status_code}, {response.text}")
 
     return img
+
 
 
 
@@ -98,6 +130,8 @@ def predict_image(img:Image, conf_threshold:float, iou_threshold:float, model_ch
     model = YOLO(model_choice)
     global PRODUCTS_AREA
     detected_objects = []
+    center_box = 0
+
     # Прогоняем изображение через модель YOLO для детекции объектов.
     results = model.predict(
         source=img,  # Передаем изображение, которое нужно обработать.
@@ -121,10 +155,14 @@ def predict_image(img:Image, conf_threshold:float, iou_threshold:float, model_ch
             x_min, y_min, x_max, y_max = box.xyxy[0]  # Координаты: [x1, y1, x2, y2]
             area = calculate_area(x_min, y_min, x_max, y_max)
             PRODUCTS_AREA += area
-            detected_objects.append(f"Area: {area}, cls: {cls} - {conf.item()*100:.2f}%")
+            center_box = get_box_center(x_min, y_min, x_max, y_max)
+            shelf = point_in_shelves(CORD_SHELFS, center_box)
+
+            detected_objects.append(f"Area: {area}, cls: {cls} - {conf.item()*100:.2f}%, shelf: {shelf}")
     detected_objects.append(f"Square (PRODUCTS_AREA/SHELFES_AREA): {PRODUCTS_AREA/SHELFES_AREA}")
     # Возвращаем как изображение, так и список найденных объектов
     return im, "\n".join(detected_objects)
+
 
 
 def infer() -> None:
