@@ -8,20 +8,22 @@ from io import BytesIO
 
 
 
-model_choices = ["weights/yolov8n.pt", "weights/yolov8s.pt", "weights/yolov8m.pt", "weights/yolov10n.pt", "weights/yolov10s.pt", "weights/yolov10m.pt"]
+model_choices = ["weights/YOLOV10_Karelia.pt", "weights/yolov10n.pt", "weights/yolov10s.pt", "weights/yolov10m.pt"]
 
 
-def get_shelfs(img) -> BytesIO: 
+def get_shelfs(img, polka_conf, polka_iou) -> BytesIO: 
 
         # Задаем необходимые параметры
     URL = "https://detect.roboflow.com/shelves-ugxt3/3"
     API_KEY = "z5gSjUxoC2gzAYUByax6"
-    CONFIDENSE = 0.2  # Укажите нужный порог уверенности
+    CONFIDENSE = polka_conf  # Укажите нужный порог уверенности
+    IOU = polka_iou
 
     # Формируем параметры запроса
     PARAMS = {
         'api_key': API_KEY,
-        'confidence': CONFIDENSE  # Добавляем параметр confidence
+        'confidence': CONFIDENSE,  # Добавляем параметр confidence
+        'iou': IOU
     }
 
     # Создаем буфер для изображения
@@ -116,11 +118,13 @@ def infer() -> None:
 
     # Определяем веб-интерфейс Gradio для взаимодействия с моделью YOLO.
     iface = gr.Interface(
-        fn=lambda img, conf_threshold, iou_threshold, model_choice: predict_image(get_shelfs(img), conf_threshold, iou_threshold, model_choice),  # Указываем функцию предсказания, которая будет вызываться при загрузке изображения.
+        fn=lambda img, conf_threshold, iou_threshold, polka_conf, polka_iou, model_choice: predict_image(get_shelfs(img, polka_conf, polka_iou), conf_threshold, iou_threshold, model_choice),  # Указываем функцию предсказания, которая будет вызываться при загрузке изображения.
         inputs=[
             gr.Image(type="pil", label="Загруженное изображение"),  # Задаем тип входных данных (изображение формата PIL).
-            gr.Slider(minimum=0, maximum=1, value=0.25, label="Confidence threshold"),  # Добавляем слайдер для регулировки порога уверенности.
-            gr.Slider(minimum=0, maximum=1, value=0.45, label="IoU threshold"),  # Добавляем слайдер для регулировки порога IoU.
+            gr.Slider(minimum=0, maximum=1, value=0.25, label="Products onfidence threshold"),  # Добавляем слайдер для регулировки порога уверенности.
+            gr.Slider(minimum=0, maximum=1, value=0.45, label="Products IoU threshold"),  # Добавляем слайдер для регулировки порога IoU.
+            gr.Slider(minimum=0, maximum=1, value=0.25, label="Shelf Confidence threshold"),  # Добавляем слайдер для регулировки порога уверенности.
+            gr.Slider(minimum=0, maximum=1, value=0.45, label="Shelf IoU polka threshold"),
             gr.Dropdown(model_choices, label="Выбор модели YOLO"),
         ],
         

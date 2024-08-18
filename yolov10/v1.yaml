@@ -1,5 +1,5 @@
 # Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
-path: ..\..\datasets\v1  # dataset root dir
+path: C:\Users\430\Desktop\Merch_CV\datasets\waffle_only  # dataset root dir
 train: train\images  # train images (relative to 'path') 128 images
 val: val\images  # val images (relative to 'path') 128 images
 # test:  # test images (optional)
@@ -7,12 +7,11 @@ val: val\images  # val images (relative to 'path') 128 images
 names:
   0: sampo_waffle_classic
   1: sampo_waffle_lemon
-  2: sl_pm_2_5_1
-  3: sl_pm_3_5_1
-  4: sl_pm_2_5_1_5
-  5: sl_pm_3_5_1_5
-  6: sl_pbm_0_5
-  7: ol_pm_2_5_1
-  8: ol_pm_3_5_1
-  9: ol_pbm_0_5
-  10: shelfs
+  2: slavmo_milk_2.5_1 
+  3: slavmo_milk_3.5_1 
+  4: slavmo_milk_2.5_1.5 
+  5: slavmo_milk_3.5_1.5
+  6: slavmo_milk_melted_3.5_0.5
+  7: olonia_milk_2.5_1
+  8: olonia_milk_3.5_1
+  9: olonia_milk_melted_4_0.5

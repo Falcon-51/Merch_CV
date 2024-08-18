@@ -19,16 +19,18 @@
 
 
 from ultralytics import YOLO
- 
-# Load the model.
-model = YOLO('yolov8n.pt')
+import torch
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(device)
+
+#Load the model.
+model = YOLO('../weights/yolov8s.pt')
  
 # Training.
 results = model.train(
-   data='custom_data.yaml',
+   data='../v1.yaml',
    imgsz=640,
-   epochs=10,
-   batch=8,
-   name='yolov8n_custom')
-
+   epochs=60,
+   batch=4,
+   name='all')
 

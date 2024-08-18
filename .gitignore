@@ -3,3 +3,4 @@
 /.venv
 /yolov8/weights
 /yolov10/weights
+/inference/weights
