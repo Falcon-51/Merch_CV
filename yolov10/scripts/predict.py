@@ -1,14 +1,10 @@
-from ultralytics import YOLO
+from ultralytics import YOLOv10
 
 # Load a pre-trained YOLOv10n model
-model = YOLO("weights/yolov10n.pt")
+model = YOLOv10("../../inference/weights/YOLOV10_Karelia.pt")
 
 # Perform object detection on an image
-results = model.val()
+results = model.val(data='../v1_test.yaml', imgsz=640,conf=0.1, iou=0.4)
 
 # Display the results
-results[0].show()
-
-# model = YOLO('yolov8n.pt')
-# >>> results = model.val(data='coco128.yaml', imgsz=640)
-# >>> print(results.box.map)  
+print(results.box.map50)  

@@ -1,6 +1,6 @@
 import gradio as gr  
 import PIL.Image as Image 
-from ultralytics import ASSETS, YOLO  
+from ultralytics import ASSETS, YOLO, YOLOv10
 import requests
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
@@ -72,9 +72,8 @@ def get_shelfs(img:Image, polka_conf:float, polka_iou:float) -> BytesIO:
             y1 = prediction['y'] - prediction['height'] / 2
             x2 = prediction['x'] + prediction['width'] / 2
             y2 = prediction['y'] + prediction['height'] / 2
-            min_cord.sort()
             min_cord.append(y1)
-
+        min_cord.sort()
 
         # Проходим по всем предсказанным объектам
         for prediction in data['predictions']:
@@ -127,7 +126,7 @@ def predict_image(img:Image, conf_threshold:float, iou_threshold:float, model_ch
     - conf_threshold: порог уверенности для детекции объектов.
     - iou_threshold: порог Intersection Over Union для подавления ненужных перекрывающихся объектов.
     """
-    model = YOLO(model_choice)
+    model = YOLOv10(model_choice)
     global PRODUCTS_AREA
     detected_objects = []
     center_box = 0
