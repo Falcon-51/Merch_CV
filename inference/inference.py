@@ -158,7 +158,7 @@ def predict_image(img:Image, conf_threshold:float, iou_threshold:float, model_ch
             shelf = point_in_shelves(CORD_SHELFS, center_box)
 
             detected_objects.append(f"Area: {area}, cls: {cls} - {conf.item()*100:.2f}%, shelf: {shelf}")
-    detected_objects.append(f"Square (PRODUCTS_AREA/SHELFES_AREA): {PRODUCTS_AREA/SHELFES_AREA}")
+    detected_objects.append(f"Square (PRODUCTS_AREA/SHELFES_AREA): {PRODUCTS_AREA/SHELFES_AREA*100:.2f}%")
     # Возвращаем как изображение, так и список найденных объектов
     return im, "\n".join(detected_objects)
 
@@ -175,7 +175,7 @@ def infer() -> None:
             gr.Slider(minimum=0, maximum=1, value=0.45, label="Products IoU threshold"),  # Добавляем слайдер для регулировки порога IoU.
             gr.Slider(minimum=0, maximum=1, value=0.25, label="Shelf Confidence threshold"),  # Добавляем слайдер для регулировки порога уверенности.
             gr.Slider(minimum=0, maximum=1, value=0.45, label="Shelf IoU threshold"),
-            gr.Dropdown(model_choices, label="Выбор модели YOLO"),
+            gr.Dropdown(model_choices, value="weights/YOLOV10_Karelia.pt", label="Выбор модели YOLO"),
         ],
         
         outputs=[
@@ -185,9 +185,9 @@ def infer() -> None:
         title="Карельская продукция",  
         description="Детекция товаров карельских производителей в розничных магазинах на основе фото", 
         examples=[
-            [ASSETS / os.path.abspath("images/EXAM.jpg"), 0.21, 0.45, 0.12, 0.21,"YOLOV10_Karelia.pt"],  
-            [ASSETS / os.path.abspath("images/EXAM2.jpg"), 0.21, 0.41, 0.18, 0.22,"YOLOV10_Karelia.pt"],
-            [ASSETS / os.path.abspath("images/EXAM3.jpg"), 0.064, 0.25, 0.17, 0.21,"YOLOV10_Karelia.pt"],  
+            [ASSETS / os.path.abspath("images/EXAM.jpg"), 0.21, 0.45, 0.12, 0.21,"weights/YOLOV10_Karelia.pt"],  
+            [ASSETS / os.path.abspath("images/EXAM2.jpg"), 0.21, 0.41, 0.18, 0.22,"weights/YOLOV10_Karelia.pt"],
+            [ASSETS / os.path.abspath("images/EXAM3.jpg"), 0.064, 0.25, 0.17, 0.21,"weights/YOLOV10_Karelia.pt"],  
         ],
         allow_flagging="never"
     )
