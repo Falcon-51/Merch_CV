@@ -46,3 +46,6 @@
 | ol_pm_2_5_1          |<image src="face_images/milk6.png" width="110" height="130">|
 | ol_pm_3_5_1          |<image src="face_images/milk7.png" width="110" height="130">|
 | ol_pbm_0_5           |<image src="face_images/milk8.png" width="110" height="130">|
+
+## Результат работы.  
+
