@@ -4,6 +4,7 @@ from ultralytics import ASSETS, YOLO
 import requests
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
+import os
 
 
 model_choices = ["weights/YOLOV10_Karelia.pt", "weights/yolov10n.pt", "weights/yolov10s.pt", "weights/yolov10m.pt"]
@@ -147,9 +148,9 @@ def infer() -> None:
         title="Карельская продукция",  
         description="Детекция товаров карельских производителей в розничных магазинах на основе фото", 
         examples=[
-            [ASSETS / "/Users/anton/Merch_CV/inference/images/EXAM.jpg", 0.21, 0.45, 0.12, 0.21,"YOLOV10_Karelia.pt"],  
-            [ASSETS / "/Users/anton/Merch_CV/inference/images/EXAM2.jpg", 0.21, 0.41, 0.18, 0.22,"YOLOV10_Karelia.pt"],
-            [ASSETS / "/Users/anton/Merch_CV/inference/images/EXAM3.jpg", 0.064, 0.25, 0.17, 0.21,"YOLOV10_Karelia.pt"],  
+            [ASSETS / os.path.abspath("images/EXAM.jpg"), 0.21, 0.45, 0.12, 0.21,"YOLOV10_Karelia.pt"],  
+            [ASSETS / os.path.abspath("images/EXAM2.jpg"), 0.21, 0.41, 0.18, 0.22,"YOLOV10_Karelia.pt"],
+            [ASSETS / os.path.abspath("images/EXAM3.jpg"), 0.064, 0.25, 0.17, 0.21,"YOLOV10_Karelia.pt"],  
         ],
         allow_flagging="never"
     )
