@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 from PIL import Image
 # Загрузка предварительно обученной модели
-model = YOLO('../weights/yolov8s')  # Замените на путь к вашей модели
+model = YOLO('../weights/yolov8s')
 
 def predict(image):
     results = model(image)  # Получение результатов предсказания

@@ -9,7 +9,7 @@ image_path = "1.jpg"
 # Задаем необходимые параметры
 URL = "https://detect.roboflow.com/shelves-ugxt3/3"
 API_KEY = "z5gSjUxoC2gzAYUByax6"
-CONFIDENSE = 0.2  # Укажите нужный порог уверенности
+CONFIDENSE = 0.2  # Указываем нужный порог уверенности
 
 # Формируем параметры запроса
 PARAMS = {
@@ -19,9 +19,19 @@ PARAMS = {
 
 
 
-def get_shelfs(url:str, params:dict, confidense:float) -> None: 
+def get_shelfs(url:str, params:dict, confidense:float) -> Image: 
+    """
+    Отправляет запрос к Roboflow для детектирования полок и возвращает картинку с BB
 
-        # Открываем изображение и отправляем POST запрос
+    Параметры:
+    - url: endpoint
+    - params: список параметров для модели
+    - confidense: порог уверенности
+
+    Возвращает: Image
+    """
+
+    # Открываем изображение и отправляем POST запрос
     with open(image_path, 'rb') as image_file:
         response = requests.post(url, params=params, files={'file': image_file})
 
@@ -53,7 +63,7 @@ def get_shelfs(url:str, params:dict, confidense:float) -> None:
                 confidence = prediction['confidence']  # Уровень уверенности
                 text = f"{class_name} ({confidence:.2f})"  # Форматируем текст
 
-                            # Определяем размер текста
+                # Определяем размер текста
                 font_size = int(height / 50)   # Размер шрифта
                 font = ImageFont.load_default(font_size)  # Используем стандартный шрифт
 

@@ -1,7 +1,17 @@
 import json
 import os
 
-def convert_coco_to_yolo(coco_file, output_dir, image_dir):
+def convert_coco_to_yolo(coco_file:str, output_dir:str, image_dir:str) -> None:
+    """
+    Конвертирует формат COCO в формат принимаемый моделью YOLO и сохраняет в выходную директорию
+
+    Параметры:
+    - coco_file:
+    - output_dir:
+    - image_dir:
+
+    Возвращает: None
+    """
     # Чтение файла COCO
     with open(coco_file) as f:
         coco_data = json.load(f)
@@ -41,8 +51,8 @@ def convert_coco_to_yolo(coco_file, output_dir, image_dir):
                 yolo_file.write(f"{class_id} {x_center} {y_center} {bbox_width} {bbox_height}\n")
 
 if __name__ == "__main__":
-    coco_file = "path/to/your/coco_annotations.json"  # Замените на путь к вашему файлу COCO
-    output_dir = "path/to/output/yolo/labels"         # Замените на желаемую директорию для вывода
-    image_dir = "path/to/your/images"                  # Замените на путь к вашим изображениям
+    coco_file = "path/to/your/coco_annotations.json"  # Путь к файлу COCO
+    output_dir = "path/to/output/yolo/labels"         # Директория для вывода
+    image_dir = "path/to/your/images"                  # Путь к изображениям
     
     convert_coco_to_yolo(coco_file, output_dir, image_dir)

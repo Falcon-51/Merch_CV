@@ -5,7 +5,8 @@ import torch
 if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(device)
-    # Load YOLOv10n model from scratch
+
+
     model = YOLO("../weights/yolov10m.pt")
     params = {
         "data": "../v1.yaml",
