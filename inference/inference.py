@@ -104,7 +104,7 @@ def get_shelfs(img:Image, polka_conf:float, polka_iou:float) -> BytesIO:
 
     # Задаем необходимые параметры
     URL = "https://detect.roboflow.com/shelves-ugxt3/3"
-    API_KEY = "z5gSjUxoC2gzAYUByax6"
+    API_KEY = ""
     CONFIDENSE = polka_conf  # Указываем порог уверенности
     IOU = polka_iou
 
